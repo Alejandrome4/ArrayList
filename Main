@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Main {
 
@@ -11,125 +12,130 @@ public class Main {
         muestraMenu();
 
         while (!sal) {
-            System.out.print("Elige una opción: ");
-            int action = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                System.out.print("\nElige una opción (6 para ver menú): ");
+                int action = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (action) {
-                case 0:
-                    System.out.println("Saliendo...");
-                    sal = true;
-                    break;
+                switch (action) {
+                    case 0:
+                        System.out.println("Cerrando la agenda...");
+                        sal = true;
+                        break;
 
-                case 1:
-                    telefonoMovil.printContacts();
-                    break;
+                    case 1:
+                        telefonoMovil.printContacts();
+                        break;
 
-                case 2:
-                    addNewContact();
-                    break;
+                    case 2:
+                        addNewContact();
+                        break;
 
-                case 3:
-                    updateContact();
-                    break;
+                    case 3:
+                        updateContact();
+                        break;
 
-                case 4:
-                    removeContact();
-                    break;
+                    case 4:
+                        removeContact();
+                        break;
 
-                case 5:
-                    queryContact();
-                    break;
+                    case 5:
+                        queryContact();
+                        break;
 
-                case 6:
-                    muestraMenu();
-                    break;
+                    case 6:
+                        muestraMenu();
+                        break;
 
-                default:
-                    System.out.println("Opción no válida");
-                    break;
+                    default:
+                        System.out.println("Esa opción no está en la lista.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error,Solo se permiten números del 0 al 6.");
+                scanner.nextLine();
             }
         }
     }
 
     private static void muestraMenu() {
-        System.out.println("\nOpciones:");
+        System.out.println("\n--- MENÚ DE OPCIONES ---");
         System.out.println("0 - Salir");
-        System.out.println("1 - Imprimir contactos");
-        System.out.println("2 - Agregar nuevo contacto");
-        System.out.println("3 - Actualizar contacto");
-        System.out.println("4 - Eliminar contacto");
-        System.out.println("5 - Buscar contacto");
-        System.out.println("6 - Mostrar opciones");
+        System.out.println("1 - Lista de contactos");
+        System.out.println("2 - Nuevo contacto");
+        System.out.println("3 - Editar contacto");
+        System.out.println("4 - Borrar contacto");
+        System.out.println("5 - Buscar por nombre");
+        System.out.println("6 - Ver opciones otra vez");
     }
-    private static void queryContact() {
-        System.out.print("Nombre del contacto a buscar: ");
-        String nombre= scanner.nextLine();
 
-        Contacto contact=telefonoMovil.queryContact(nombre);
-        if (contact== null) {
-            System.out.println("Contacto no encontrado");
+    private static void queryContact() {
+        System.out.print("Introduce el nombre a buscar: ");
+        String nombre = scanner.nextLine();
+
+        Contacto contact = telefonoMovil.queryContact(nombre);
+        if (contact == null) {
+            System.out.println("No he encontrado a nadie con ese nombre.");
         } else {
-            System.out.println("Nombre: " + contact.getName());
-            System.out.println("Teléfono:" +contact.getPhoneNumber());
+            System.out.println("Datos: " + contact.getName() + " -> " + contact.getPhoneNumber());
         }
     }
-    private static void updateContact() {
-        System.out.print("Nombre del contacto a actualizar: ");
-        String nombre= scanner.nextLine();
 
-        Contacto antContact=telefonoMovil.queryContact(nombre);
-        if (antContact== null) {
-            System.out.println("El contacto no existe");
+    private static void updateContact() {
+        System.out.print("Nombre de quien quieres actualizar: ");
+        String nombre = scanner.nextLine();
+
+        Contacto antContact = telefonoMovil.queryContact(nombre);
+        if (antContact == null) {
+            System.out.println("Ese contacto no existe en la lista.");
             return;
         }
 
-        System.out.print("Nuevo nombre: ");
-        String nuevNombre =scanner.nextLine();
+        System.out.print("Nombre corregido: ");
+        String nuevNombre = scanner.nextLine();
 
-        System.out.print("Nuevo teléfono: ");
-        String nuevTelefono= scanner.nextLine();
+        System.out.print("Teléfono nuevo: ");
+        String nuevTelefono = scanner.nextLine();
 
-        Contacto nuevContact =Contacto.createContact(nuevNombre, nuevTelefono);
+        Contacto nuevContact = Contacto.createContact(nuevNombre, nuevTelefono);
 
         if (telefonoMovil.updateContact(antContact, nuevContact)) {
-            System.out.println("Contacto actualizado correctamente");
+            System.out.println("Se ha actualizado sin problemas.");
         } else {
-            System.out.println("No se pudo actualizar el contacto");
+            System.out.println("Error: El nombre nuevo ya lo tiene otra persona.");
         }
     }
 
     private static void removeContact() {
-        System.out.print("Nombre del contacto a eliminar: ");
-        String nombre=scanner.nextLine();
+        System.out.print("Nombre del contacto a borrar: ");
+        String nombre = scanner.nextLine();
 
-        Contacto contact= telefonoMovil.queryContact(nombre);
-        if (contact== null) {
-            System.out.println("Contacto no encontrado");
+        Contacto contact = telefonoMovil.queryContact(nombre);
+        if (contact == null) {
+            System.out.println("No se puede borrar porque no existe.");
             return;
         }
 
         if (telefonoMovil.removeContact(contact)) {
-            System.out.println("Contacto eliminado correctamente");
+            System.out.println("Contacto eliminado de la agenda.");
         } else {
-            System.out.println("No se pudo eliminar el contacto");
+            System.out.println("No se ha podido eliminar.");
         }
     }
 
-
     private static void addNewContact() {
-        System.out.print("Nombre: ");
+        System.out.print("Dime el nombre: ");
         String nombre = scanner.nextLine();
 
-        System.out.print("Teléfono: ");
+        System.out.print("Dime el teléfono: ");
         String telefono = scanner.nextLine();
 
-        Contacto nuevContact= Contacto.createContact(nombre, telefono);
+        Contacto nuevContact = Contacto.createContact(nombre, telefono);
 
         if (telefonoMovil.addNewContact(nuevContact)) {
-            System.out.println("Contacto añadido");
+            System.out.println("Contacto guardado.");
         } else {
-            System.out.println("El contacto ya existe");
+            System.out.println("Ese nombre ya está registrado.");
         }
     }
 }
