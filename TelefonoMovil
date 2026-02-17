@@ -1,0 +1,66 @@
+import java.util.ArrayList;
+public class TelefonoMovil {
+    private String myNumber;
+    private ArrayList<Contacto> myContacts;
+
+    public TelefonoMovil(String myNumber) {
+        this.myNumber = myNumber;
+        this.myContacts = new ArrayList<>();
+    }
+    private int findContact(String name){
+        for (int i = 0; i < myContacts.size(); i++) {
+            if (myContacts.get(i).getName().equals(name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private int findContact(Contacto contact) {
+        return myContacts.indexOf(contact);
+    }
+
+    public boolean addNewContact(Contacto contact) {
+        if (findContact(contact.getName()) >= 0) {
+            return false;
+        }
+        myContacts.add(contact);
+        return true;
+    }
+public boolean updateContact(Contacto antContact,Contacto nuevContact){
+int foundPosition = findContact(antContact);
+if(foundPosition<0){
+    return false;
+}
+if(findContact(nuevContact.getName())>=0){
+    return false;
+
+}
+myContacts.set(foundPosition,nuevContact);
+return true;
+}
+public boolean removeContact(Contacto contact){
+    int foundPosition = findContact(contact);
+    if(foundPosition < 0){
+        return false;
+    }
+    myContacts.remove(foundPosition);
+        return true;
+    }
+    public Contacto queryContact(String name) {
+        int position = findContact(name);
+        if (position >= 0) {
+            return myContacts.get(position);
+        }
+        return null;
+    }
+
+    public void printContacts() {
+        System.out.println("Lista de contactos:");
+        for (int i = 0; i < myContacts.size(); i++) {
+            System.out.println((i + 1) + ". " +
+                    myContacts.get(i).getName() + " -> " +
+                    myContacts.get(i).getPhoneNumber());
+        }
+}
+}
+
