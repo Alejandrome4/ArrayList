@@ -1,0 +1,135 @@
+import java.util.Scanner;
+
+public class Main {
+
+    private static Scanner scanner = new Scanner(System.in);
+    private static TelefonoMovil telefonoMovil = new TelefonoMovil("600000000");
+
+    public static void main(String[] args) {
+
+        boolean sal = false;
+        muestraMenu();
+
+        while (!sal) {
+            System.out.print("Elige una opción: ");
+            int action = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (action) {
+                case 0:
+                    System.out.println("Saliendo...");
+                    sal = true;
+                    break;
+
+                case 1:
+                    telefonoMovil.printContacts();
+                    break;
+
+                case 2:
+                    addNewContact();
+                    break;
+
+                case 3:
+                    updateContact();
+                    break;
+
+                case 4:
+                    removeContact();
+                    break;
+
+                case 5:
+                    queryContact();
+                    break;
+
+                case 6:
+                    muestraMenu();
+                    break;
+
+                default:
+                    System.out.println("Opción no válida");
+                    break;
+            }
+        }
+    }
+
+    private static void muestraMenu() {
+        System.out.println("\nOpciones:");
+        System.out.println("0 - Salir");
+        System.out.println("1 - Imprimir contactos");
+        System.out.println("2 - Agregar nuevo contacto");
+        System.out.println("3 - Actualizar contacto");
+        System.out.println("4 - Eliminar contacto");
+        System.out.println("5 - Buscar contacto");
+        System.out.println("6 - Mostrar opciones");
+    }
+    private static void queryContact() {
+        System.out.print("Nombre del contacto a buscar: ");
+        String nombre= scanner.nextLine();
+
+        Contacto contact=telefonoMovil.queryContact(nombre);
+        if (contact== null) {
+            System.out.println("Contacto no encontrado");
+        } else {
+            System.out.println("Nombre: " + contact.getName());
+            System.out.println("Teléfono:" +contact.getPhoneNumber());
+        }
+    }
+    private static void updateContact() {
+        System.out.print("Nombre del contacto a actualizar: ");
+        String nombre= scanner.nextLine();
+
+        Contacto antContact=telefonoMovil.queryContact(nombre);
+        if (antContact== null) {
+            System.out.println("El contacto no existe");
+            return;
+        }
+
+        System.out.print("Nuevo nombre: ");
+        String nuevNombre =scanner.nextLine();
+
+        System.out.print("Nuevo teléfono: ");
+        String nuevTelefono= scanner.nextLine();
+
+        Contacto nuevContact =Contacto.createContact(nuevNombre, nuevTelefono);
+
+        if (telefonoMovil.updateContact(antContact, nuevContact)) {
+            System.out.println("Contacto actualizado correctamente");
+        } else {
+            System.out.println("No se pudo actualizar el contacto");
+        }
+    }
+
+    private static void removeContact() {
+        System.out.print("Nombre del contacto a eliminar: ");
+        String nombre=scanner.nextLine();
+
+        Contacto contact= telefonoMovil.queryContact(nombre);
+        if (contact== null) {
+            System.out.println("Contacto no encontrado");
+            return;
+        }
+
+        if (telefonoMovil.removeContact(contact)) {
+            System.out.println("Contacto eliminado correctamente");
+        } else {
+            System.out.println("No se pudo eliminar el contacto");
+        }
+    }
+
+
+    private static void addNewContact() {
+        System.out.print("Nombre: ");
+        String nombre = scanner.nextLine();
+
+        System.out.print("Teléfono: ");
+        String telefono = scanner.nextLine();
+
+        Contacto nuevContact= Contacto.createContact(nombre, telefono);
+
+        if (telefonoMovil.addNewContact(nuevContact)) {
+            System.out.println("Contacto añadido");
+        } else {
+            System.out.println("El contacto ya existe");
+        }
+    }
+}
